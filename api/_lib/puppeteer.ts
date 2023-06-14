@@ -22,7 +22,23 @@ export async function getScreenshot(url, width, height) {
     height: Number(height) || 720,
     deviceScaleFactor: 2,
   });
+
   await page.waitForSelector('#event-image');
+
+  await page.evaluate(sel => {
+    const elements = document.getElementsByTagName(sel);
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].parentNode.removeChild(elements[i]);
+    }
+  }, 'header');
+
+  await page.evaluate(sel => {
+    const elements = document.querySelectorAll(sel);
+    for (let i = 0; i < elements.length; i++) {
+      elements[i].parentNode.removeChild(elements[i]);
+    }
+  }, '.intercom-lightweight-app');
+
   const file = await page.screenshot();
   return file;
 }
